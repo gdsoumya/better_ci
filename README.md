@@ -19,10 +19,12 @@ DOCKER_PASS=<docker-password>
 WEBHOOK_SECRET=<webhook-secret>
 ```
 3. Start CI Server
+
     ```sh
     $ ./output/better_ci
     ```
     or
+
     ```sh
     $ go run . 
     ```
