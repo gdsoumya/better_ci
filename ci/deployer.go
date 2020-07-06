@@ -54,7 +54,7 @@ func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]str
 	}
 	cmtData := ""
 	for _, value := range urls {
-		cmtData += "<br> - " + c.host + ":" + value
+		cmtData += "\n- " + c.host + ":" + value
 	}
 	log.Print("STARTING DOCKER FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	cmd := exec.Command("docker-compose", "-f", docker, "up", "-d")
@@ -131,7 +131,7 @@ func (c *Config) k8sDeploy(dir string, k8s string, imageMap map[string]string, c
 	cmtData := ""
 	ports := strings.Split(strings.Trim(string(output), "'"), " ")
 	for _, value := range ports {
-		cmtData += "<br> - " + c.host + ":" + value
+		cmtData += "\n- " + c.host + ":" + value
 	}
 	c.CommentPR(cmt, cmtData)
 	time.Sleep(5 * time.Minute)
