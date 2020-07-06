@@ -2,6 +2,11 @@
 
 Just a Better CI that you always wanted. Allows you to deploy PRs temporarily for a preview. Works with Docker-Compose and K8s deployments.
 
+## Prerequisites
+
+1. [Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04) and [Docker-Compose](https://docs.docker.com/compose/install/)
+2. Kubectl configured
+
 ## Start CI
 1. Cone Repo
 
