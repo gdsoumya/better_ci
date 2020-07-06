@@ -182,7 +182,7 @@ spec:
 
 To start the preview build of a PR in a registered repo -
 * Comment In the PR: **/preview**
-* Comment In the PR: **/preview <integer>**
+* Comment In the PR: **/preview `<integer>`**
 
 The first form will deploy the preview for a default time of `5mins` the second will deploy it for `<integer>mins`
 
