@@ -10,22 +10,27 @@ $ cd better_ci
 ```
 2. Create .env file with : [**All fields are compulsory**]
 ```
-ACCESS_KEY=<your_personal_github_access_key>
+PORT=<port-to-run-ci-server>
+ACCESS_KEY=<your-personal-github-access-key>
 DOCKER_USER=<docker-username-for-builds>
 DOCKER_PASS=<docker-password>
 WEBHOOK_SECRET=<webhook-secret>
 ```
 3. Start CI Server
-```sh
-  $ go run . 
-```
+    ```sh
+    $ ./output/better_ci
+    ```
+    or
+    ```sh
+    $ go run . 
+    ```
 
 ## Setup Repo
 
 1. Add a Web Hook to your repo with the CI server URL
 
 ```
-WebHook URL : <server_url>:8080/payload
+WebHook URL : <server_url>:8080/webhook
 ```
 
 2. Add Better CI Config to deploy preview builds

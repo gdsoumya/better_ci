@@ -14,8 +14,9 @@ func main() {
 	if err != nil {
 		return
 	}
-	router.HandleFunc("/payload", c.WebHook)
+	port := ":" + c.Port
+	router.HandleFunc("/webhook", c.WebHook)
 	router.HandleFunc("/", c.Ping)
-	log.Print("Server Started at :8080")
-	http.ListenAndServe(":8080", router)
+	log.Print("Server Started at ", port)
+	http.ListenAndServe(port, router)
 }

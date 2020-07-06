@@ -17,34 +17,34 @@ type Config struct {
 	dockeru string
 	dockerp string
 	websec  string
+	Port    string
 }
 
 func Init() (Config, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("CANNOT READ ENV DATA")
-		//return Config{}, err
 	}
 	var c Config
 	accessKey, exists := os.LookupEnv("ACCESS_KEY")
 	if !exists {
 		log.Fatal("ERROR ENV: ACCESS KEY MISSING")
-		//return Config{}, errors.New("ERROR ENV: ACCESS KEY MISSING")
 	}
 	c.dockeru, exists = os.LookupEnv("DOCKER_USER")
 	if !exists {
 		log.Fatal("ERROR ENV: DOCKER USERNAME MISSING")
-		//return Config{}, errors.New("ERROR ENV: DOCKER USERNAME MISSING")
 	}
 	c.dockerp, exists = os.LookupEnv("DOCKER_PASS")
 	if !exists {
 		log.Fatal("ERROR ENV: DOCKER PASSWORD MISSING")
-		//return Config{}, errors.New("ERROR ENV: DOCKER PASSWORD MISSING")
 	}
 	c.websec, exists = os.LookupEnv("WEBHOOK_SECRET")
 	if !exists {
 		log.Fatal("ERROR ENV: WEBHOOK SECRET MISSING, REMEMBER TO SECURE YOUR HOOKS ALWAYS")
-		//return Config{}, errors.New("ERROR ENV: DOCKER PASSWORD MISSING")
+	}
+	c.Port, exists = os.LookupEnv("PORT")
+	if !exists {
+		log.Fatal("ERROR ENV: PORT FOR CI MISSING")
 	}
 	c.ctx = context.Background()
 	ts := oauth2.StaticTokenSource(
