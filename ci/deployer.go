@@ -3,6 +3,7 @@ package ci
 import (
 	"log"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
@@ -52,7 +53,7 @@ func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]str
 		log.Print("ERROR : ", err.Error())
 		return err
 	}
-	cmtData := ""
+	cmtData := "\nLink Expires In : " + strconv.Itoa(cmt.Time) + "mins"
 	for _, value := range urls {
 		cmtData += "\n- " + c.host + ":" + value
 	}
@@ -70,7 +71,7 @@ func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]str
 		log.Print("DEPLOYED : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	}
 	c.CommentPR(cmt, cmtData)
-	time.Sleep(5 * time.Minute)
+	time.Sleep(time.Duration(cmt.Time) * time.Minute)
 	log.Print("STOPPING DOCKER FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	cmd = exec.Command("docker-compose", "-f", docker, "down", "-v", "--rmi", "all") //ADD --rmi all
 	cmd.Dir = dir
@@ -128,13 +129,13 @@ func (c *Config) k8sDeploy(dir string, k8s string, imageMap map[string]string, c
 		log.Print("ERROR : ", err.Error())
 		return err
 	}
-	cmtData := ""
+	cmtData := "\nLink Expires In : " + strconv.Itoa(cmt.Time) + "mins"
 	ports := strings.Split(strings.Trim(string(output), "'"), " ")
 	for _, value := range ports {
 		cmtData += "\n- " + c.host + ":" + value
 	}
 	c.CommentPR(cmt, cmtData)
-	time.Sleep(5 * time.Minute)
+	time.Sleep(time.Duration(cmt.Time) * time.Minute)
 	log.Print("STOPPING K8s DEPLOYMENT FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	cmd = exec.Command("kubectl", "delete", "ns", cmt.Username+"-"+cmt.Repo+"-pr"+cmt.PR)
 	// run command

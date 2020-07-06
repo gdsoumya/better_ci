@@ -8,4 +8,5 @@ type EventDetails struct {
 	Username   string
 	Repo       string
 	PR         string
+	Time       int
 }

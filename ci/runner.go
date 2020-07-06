@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/gdsoumya/better_ci/utils"
 
@@ -51,12 +53,38 @@ func (c *Config) WebHook(w http.ResponseWriter, r *http.Request) {
 		}
 		if state == "created" {
 			log.Print(commentData)
+			allowed := false
+			for _, value := range c.permission {
+				if strings.ToLower(value) == strings.ToLower(commentData.Permission) || strings.ToLower(value) == "any" {
+					allowed = true
+					break
+				}
+			}
+			if !allowed {
+				w.Write([]byte("We don't do this here"))
+				log.Print("ERROR : UNAUTHORIZED USER DEPLOY")
+				return
+			}
 			pat := regexp.MustCompile(`[\/#]`)
 			urlData := pat.Split(commentData.URL, -1)
-			//log.Print(urlData[0], urlData[1], urlData[2], urlData[3], urlData[4], urlData[5], urlData[6])
-			if urlData[5] != "pull" || commentData.Body != "/preview" {
+			if urlData[5] != "pull" {
 				// log.Print(urlData[4], []byte(urlData[4]), []byte("pull"))
 				w.Write([]byte("We don't do this here"))
+				return
+			}
+			cmtBody := strings.Split(commentData.Body, " ")
+			if len(cmtBody) == 1 && cmtBody[0] == "/preview" {
+				commentData.Time = 5
+			} else if len(cmtBody) == 2 && cmtBody[0] == "/preview" {
+				commentData.Time, err = strconv.Atoi(cmtBody[1])
+				if err != nil {
+					w.Write([]byte("We don't do this here"))
+					log.Print("ERROR : WRONG MESSAGE FORMAT")
+					return
+				}
+			} else {
+				w.Write([]byte("We don't do this here"))
+				log.Print("ERROR : WRONG MESSAGE FORMAT")
 				return
 			}
 			commentData.Username, commentData.Repo, commentData.PR = urlData[3], urlData[4], urlData[6]

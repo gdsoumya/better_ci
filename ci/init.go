@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/gdsoumya/better_ci/utils"
 
@@ -14,13 +15,14 @@ import (
 )
 
 type Config struct {
-	ctx     context.Context
-	client  *github.Client
-	dockeru string
-	dockerp string
-	websec  string
-	Port    string
-	host    string
+	ctx        context.Context
+	client     *github.Client
+	dockeru    string
+	dockerp    string
+	websec     string
+	Port       string
+	host       string
+	permission []string
 }
 
 func Init() (Config, error) {
@@ -55,6 +57,12 @@ func Init() (Config, error) {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
+	}
+	permission, exist := os.LookupEnv("AUTHOR_PERMISSION")
+	if !exist {
+		log.Fatal("ERROR ENV: AUTHOR PERMISSION FOR CI MISSING")
+	} else {
+		c.permission = strings.Split(permission, " ")
 	}
 	log.Print("CI HOST : ", c.host)
 	log.Print("WEBHOOK URL : http://", c.host, ":", c.Port, "/webhook")
