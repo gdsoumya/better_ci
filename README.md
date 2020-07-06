@@ -18,7 +18,7 @@ $ cd better_ci
 * All Fields except `HOST` are compulsory
 * `ACCESS_KEY` only needs `public_repo` access
 * If `HOST` is missing from`.env` the `public ip` of the system is used.
-* `AUTHOR_PERMISSION` can have 3 values `OWNER`, `COLLABORATOR` or `ANY`. The value can be the combination of the 3, separated by space.<br>Eg. `AUTHOR_PERMISSION=OWNER COLLABORATOR`
+* `AUTHOR_PERMISSION` can have 4 values `OWNER`, `COLLABORATOR`, `MEMBER` or `ANY`. The value can be the combination of the 4, separated by space.<br>Eg. `AUTHOR_PERMISSION=OWNER COLLABORATOR`
   
 ```
 HOST=<optional-field-for-public-ip-or-hostname>
