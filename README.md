@@ -9,7 +9,9 @@ $ git clone https://github.com/gdsoumya/better_ci.git
 $ cd better_ci
 ```
 2. Create .env file with :
-* **All Fields except HOST are compulsory**
+* All Fields except `HOST` are compulsory
+* `ACCESS_KEY` only needs `public_repo` access
+* If `HOST` is missing from`.env` the `public ip` of the system is used.
 ```
 HOST=<optional-field-for-public-ip-or-hostname>
 PORT=<port-to-run-ci-server>
@@ -31,10 +33,10 @@ WEBHOOK_SECRET=<webhook-secret>
 
 ## Setup Repo
 
-1. Add a Web Hook to your repo with the CI server URL
+1. Add a Web Hook to your repo with the CI server URL. The WebHook only needs `Issue comments` event access. 
 
 ```
-WebHook URL : <server_url>:8080/webhook
+WeWebHook URL : http://HOST:PORT/webhook
 ```
 
 2. Add Better CI Config to deploy preview builds
