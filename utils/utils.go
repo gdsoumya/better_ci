@@ -4,8 +4,11 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
+	"net/http"
 	"os"
 )
 
@@ -48,4 +51,18 @@ func SignBody(secret, body []byte) string {
 
 func VerifySig(sig, secret string, body []byte) bool {
 	return sig == SignBody([]byte(secret), body)
+}
+
+func GetPublicIP() (string, error) {
+	url := "https://api.ipify.org?format=text"
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", errors.New("ERROR : CANNOT GET PUBLIC IP " + err.Error())
+	}
+	defer resp.Body.Close()
+	ip, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.New("ERROR : CANNOT GET PUBLIC IP " + err.Error())
+	}
+	return string(ip), nil
 }

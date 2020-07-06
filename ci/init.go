@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/gdsoumya/better_ci/utils"
+
 	"github.com/joho/godotenv"
 
 	"github.com/google/go-github/v32/github"
@@ -18,6 +20,7 @@ type Config struct {
 	dockerp string
 	websec  string
 	Port    string
+	host    string
 }
 
 func Init() (Config, error) {
@@ -46,6 +49,14 @@ func Init() (Config, error) {
 	if !exists {
 		log.Fatal("ERROR ENV: PORT FOR CI MISSING")
 	}
+	c.host, exists = os.LookupEnv("HOST")
+	if !exists {
+		c.host, err = utils.GetPublicIP()
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	}
+	log.Print("CI HOST :", c.host)
 	c.ctx = context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: accessKey},

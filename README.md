@@ -8,8 +8,10 @@ Just a Better CI that you always wanted. Allows you to deploy PRs temporarily fo
 $ git clone https://github.com/gdsoumya/better_ci.git
 $ cd better_ci
 ```
-2. Create .env file with : [**All fields are compulsory**]
+2. Create .env file with :
+* **All Fields except HOST are compulsory**
 ```
+HOST=<optional-field-for-public-ip-or-hostname>
 PORT=<port-to-run-ci-server>
 ACCESS_KEY=<your-personal-github-access-key>
 DOCKER_USER=<docker-username-for-builds>
