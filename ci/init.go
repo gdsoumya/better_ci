@@ -16,6 +16,7 @@ type Config struct {
 	client  *github.Client
 	dockeru string
 	dockerp string
+	websec  string
 }
 
 func Init() (Config, error) {
@@ -38,6 +39,11 @@ func Init() (Config, error) {
 	c.dockerp, exists = os.LookupEnv("DOCKER_PASS")
 	if !exists {
 		log.Fatal("ERROR ENV: DOCKER PASSWORD MISSING")
+		//return Config{}, errors.New("ERROR ENV: DOCKER PASSWORD MISSING")
+	}
+	c.websec, exists = os.LookupEnv("WEBHOOK_SECRET")
+	if !exists {
+		log.Fatal("ERROR ENV: WEBHOOK SECRET MISSING, REMEMBER TO SECURE YOUR HOOKS ALWAYS")
 		//return Config{}, errors.New("ERROR ENV: DOCKER PASSWORD MISSING")
 	}
 	c.ctx = context.Background()

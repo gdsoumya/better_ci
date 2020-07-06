@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/gdsoumya/better_ci/utils"
+
 	"github.com/gdsoumya/better_ci/types"
 )
 
@@ -14,9 +16,15 @@ func (c *Config) Ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("CI RUNNING"))
 }
 func (c *Config) WebHook(w http.ResponseWriter, r *http.Request) {
+	secret := r.Header.Get("X-Hub-Signature")
 	data, _ := ioutil.ReadAll(r.Body)
 	var jsonData map[string]*json.RawMessage
 	err := json.Unmarshal(data, &jsonData)
+	if !utils.VerifySig(secret, c.websec, data) {
+		w.Write([]byte("OOPS Wrong Hook!"))
+		log.Print("RECEIVED EVENT FROM WRONG HOOK, SHA1 SIG MISMATCH")
+		return
+	}
 	if err != nil {
 		log.Print("ERROR Handling Event : ", err.Error())
 		w.Write([]byte("Error : " + err.Error()))

@@ -8,11 +8,12 @@ Just a Better CI that you always wanted. Allows you to deploy PRs temporarily fo
 $ git clone https://github.com/gdsoumya/better_ci.git
 $ cd better_ci
 ```
-2. Create .env file with :
+2. Create .env file with : [**All fields are compulsory**]
 ```
 ACCESS_KEY=<your_personal_github_access_key>
 DOCKER_USER=<docker-username-for-builds>
 DOCKER_PASS=<docker-password>
+WEBHOOK_SECRET=<webhook-secret>
 ```
 3. Start CI Server
 ```sh
