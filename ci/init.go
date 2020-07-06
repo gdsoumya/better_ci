@@ -56,7 +56,8 @@ func Init() (Config, error) {
 			log.Fatal(err.Error())
 		}
 	}
-	log.Print("CI HOST :", c.host)
+	log.Print("CI HOST : ", c.host)
+	log.Print("WEBHOOK URL : http://", c.host, ":", c.Port, "/webhook")
 	c.ctx = context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: accessKey},
