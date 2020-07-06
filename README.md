@@ -98,7 +98,7 @@ The field `name` can be later reused in the Docker-Compose or K8s-Manifest Templ
 
 **All relative paths are with respect to the root of the repository.**
     
-3. `docker-compose` or `k8s-manifest` : A string denoting the relative path to the docker-compose file template or k8s-maifest template, both cannot be used at the same time. If used either error will be thrown or docker-compose will be given preference.
+3. **docker-compose** | **k8s-manifest** : A string denoting the relative path to the docker-compose file template or k8s-maifest template, both cannot be used at the same time. If used either error will be thrown or docker-compose will be given preference.
 
 ### Docker-Compose Template
 The Docker compose template allows 2 variables :
