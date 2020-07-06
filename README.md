@@ -23,6 +23,7 @@ WEBHOOK_SECRET=<webhook-secret>
 3. Start CI Server
 
     ```sh
+    $ go build -o ./output/ .
     $ ./output/better_ci
     ```
     or
