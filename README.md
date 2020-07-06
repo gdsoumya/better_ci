@@ -4,6 +4,7 @@ Just a Better CI that you always wanted. Allows you to deploy PRs temporarily fo
 
 ## Start CI
 1. Cone Repo
+
 ```sh
 $ git clone https://github.com/gdsoumya/better_ci.git
 $ cd better_ci
@@ -12,6 +13,8 @@ $ cd better_ci
 * All Fields except `HOST` are compulsory
 * `ACCESS_KEY` only needs `public_repo` access
 * If `HOST` is missing from`.env` the `public ip` of the system is used.
+* `AUTHOR_PERMISSION` can have 3 values `OWNER`, `COLLABORATOR` or `ANY`. The value can be the combination of the 3, separated by space.<br>Eg. `AUTHOR_PERMISSION=OWNER COLLABORATOR`
+  
 ```
 HOST=<optional-field-for-public-ip-or-hostname>
 PORT=<port-to-run-ci-server>
@@ -19,6 +22,7 @@ ACCESS_KEY=<your-personal-github-access-key>
 DOCKER_USER=<docker-username-for-builds>
 DOCKER_PASS=<docker-password>
 WEBHOOK_SECRET=<webhook-secret>
+AUTHOR_PERMISSION=<author-association-allowed-to-deploy>
 ```
 3. Start CI Server
 
@@ -172,10 +176,12 @@ spec:
 ## Initiate Build
 
 To start the preview build of a PR in a registered repo -
-1. Comment In the PR: **/preview**
+* Comment In the PR: **/preview**
+* Comment In the PR: **/preview <integer>**
 
-This will run the ci with the specified config and deploy a preview that will expire in 5mins. The links of the exposed services in both docker-compose and k8s case will be added to the comment automatically once they are deployed. Once the link expires an expired message gets edited into the comment itself.
+The first form will deploy the preview for a default time of `5mins` the second will deploy it for `<integer>mins`
 
+The links of the exposed services in both docker-compose and k8s case will be added to the comment automatically once they are deployed. Once the link expires an expired message gets edited into the comment itself.
 Currently, only one build can be active per PR, so once a build is initiated you have to wait before it expires to perform a new build of the PR. 
 
 ## Author
