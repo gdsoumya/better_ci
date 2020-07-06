@@ -36,7 +36,7 @@ WEBHOOK_SECRET=<webhook-secret>
 1. Add a Web Hook to your repo with the CI server URL. The WebHook only needs `Issue comments` event access. 
 
 ```
-WeWebHook URL : http://HOST:PORT/webhook
+WebHook URL : http://<HOST>:<PORT>/webhook
 ```
 
 2. Add Better CI Config to deploy preview builds
