@@ -1,11 +1,10 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
 	"github.com/gdsoumya/better_ci/ci"
 	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 func main() {

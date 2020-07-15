@@ -10,22 +10,20 @@ import (
 	"github.com/gdsoumya/better_ci/utils"
 )
 
-func DockerParser(path string, imageMap map[string]string) ([]string, error) {
+func DockerParser(path string, imageMap map[string]string) error {
 	file, err := os.Open(path)
 	if err != nil {
-		return []string{}, err
+		return err
 	}
 	defer file.Close()
 	pat := regexp.MustCompile(`#{.*}`)
 	scanner := bufio.NewScanner(file)
-	var urls []string
 	var lines []string
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Contains(line, "#{PORT}") {
 			tempP, _ := utils.GetFreePort()
 			temp := strconv.Itoa(tempP)
-			urls = append(urls, temp)
 			line = strings.Replace(line, "#{PORT}", temp, -1)
 		} else if pat.MatchString(line) {
 			key := pat.FindString(line)
@@ -38,11 +36,11 @@ func DockerParser(path string, imageMap map[string]string) ([]string, error) {
 		lines = append(lines, line)
 	}
 	if err := scanner.Err(); err != nil {
-		return []string{}, err
+		return  err
 	}
 	err = utils.PrintLines(path, lines)
 	if err != nil {
-		return []string{}, err
+		return  err
 	}
-	return urls, nil
+	return nil
 }

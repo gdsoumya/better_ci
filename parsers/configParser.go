@@ -7,7 +7,8 @@ import (
 	"os"
 )
 
-/*
+/* BETTER CI CONFIG STRUCTURE
+
 RUN:
 	-
 BUILD-IMAGE:
@@ -19,11 +20,10 @@ BUILD-IMAGE:
 		FILE : dockerfile
 		CONTEXT : .
 		PUSH : true
-DOCKER : docker-compose_dir
-K8S :
-
-
+DOCKER : ci-docker-compose.yml
+K8S : ci-k8s-manifest.yml
 */
+
 type Image struct {
 	NAME    string `json:"name"`
 	FILE    string `json:"file"`

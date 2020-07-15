@@ -9,9 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gdsoumya/better_ci/utils"
-
 	"github.com/gdsoumya/better_ci/types"
+	"github.com/gdsoumya/better_ci/utils"
 )
 
 func (c *Config) Ping(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +61,7 @@ func (c *Config) WebHook(w http.ResponseWriter, r *http.Request) {
 			}
 			if !allowed {
 				w.Write([]byte("We don't do this here"))
-				log.Print("ERROR : UNAUTHORIZED USER DEPLOY")
+				//log.Print("ERROR : UNAUTHORIZED USER DEPLOY")
 				return
 			}
 			pat := regexp.MustCompile(`[\/#]`)
@@ -72,7 +71,8 @@ func (c *Config) WebHook(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("We don't do this here"))
 				return
 			}
-			cmtBody := strings.Split(commentData.Body, " ")
+			cmtData := strings.TrimSpace(commentData.Body)
+			cmtBody := strings.Split(cmtData, " ")
 			if len(cmtBody) == 1 && cmtBody[0] == "/preview" {
 				commentData.Time = 5
 			} else if len(cmtBody) == 2 && cmtBody[0] == "/preview" {

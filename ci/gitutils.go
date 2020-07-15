@@ -6,9 +6,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/gdsoumya/better_ci/utils"
-
 	"github.com/gdsoumya/better_ci/types"
+	"github.com/gdsoumya/better_ci/utils"
 	"github.com/google/go-github/v32/github"
 )
 

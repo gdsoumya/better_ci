@@ -7,9 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gdsoumya/better_ci/types"
-
 	"github.com/gdsoumya/better_ci/parsers"
+	"github.com/gdsoumya/better_ci/types"
 )
 
 func (c *Config) Deploy(cmt *types.EventDetails) {
@@ -46,16 +45,12 @@ func (c *Config) Deploy(cmt *types.EventDetails) {
 }
 func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]string, cmt *types.EventDetails) error {
 	log.Print("EXECUTING DOCKER STAGE FOR: ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
-	urls, err := parsers.DockerParser(dir+"/"+docker, imageMap)
+	err := parsers.DockerParser(dir+"/"+docker, imageMap)
 	if err != nil {
 		c.CommentPR(cmt, "**ERROR IN CI**")
 		log.Print("XX FAILED to PARSE DOCKER-COMPOSE FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 		log.Print("ERROR : ", err.Error())
 		return err
-	}
-	cmtData := "\nLink Expires In : " + strconv.Itoa(cmt.Time) + "mins"
-	for _, value := range urls {
-		cmtData += "\n- " + c.host + ":" + value
 	}
 	log.Print("STARTING DOCKER FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	cmd := exec.Command("docker-compose", "-f", docker, "up", "-d")
@@ -70,6 +65,32 @@ func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]str
 		log.Printf("\n%s", output)
 		log.Print("DEPLOYED : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	}
+	cmtData := "\n**LINK EXPIRES IN : " + strconv.Itoa(cmt.Time) + "mins**\n"
+	cmd = exec.Command("docker-compose", "ps")
+	cmd.Dir=dir
+	output, err := cmd.Output()
+	if err != nil {
+		c.CommentPR(cmt, "**ERROR IN CI**")
+		log.Print("XX ERROR Fetching Docker-Compose PS for ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
+		log.Print("ERROR : ", err, output)
+		return err
+	}
+	ports := strings.Split(strings.Trim(string(output), "'"), "\n")
+	ports=ports[2:]
+	portData:="Name | Address\n--- | ---\n"
+	for _,value:=range ports{
+		if value==""{
+			continue
+		}
+		port := strings.Split(strings.TrimSpace(value)," ")
+		if strings.Contains(port[len(port)-1],"->") {
+			svName := strings.Split(port[0], "pr"+cmt.PR+"_")[1]
+			addr := strings.Split(port[len(port)-1], "->")[0]
+			addr=c.host+":"+strings.Split(addr,":")[1]
+			portData += svName + " | "+addr+"\n"
+		}
+	}
+	cmtData += portData
 	c.CommentPR(cmt, cmtData)
 	time.Sleep(time.Duration(cmt.Time) * time.Minute)
 	log.Print("STOPPING DOCKER FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
@@ -85,7 +106,7 @@ func (c *Config) dockerDeploy(dir string, docker string, imageMap map[string]str
 		log.Printf("\n%s", output)
 		log.Print("STOPPED : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	}
-	c.CommentPR(cmt, "<br>LINK EXPIRED")
+	c.CommentPR(cmt, "\n**LINK EXPIRED**")
 	return nil
 }
 
@@ -121,7 +142,7 @@ func (c *Config) k8sDeploy(dir string, k8s string, imageMap map[string]string, c
 		log.Printf("\n%s", output)
 		log.Print("DEPLOYED IN K8s : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	}
-	cmd = exec.Command("kubectl", "get", "svc", "-n", cmt.Username+"-"+cmt.Repo+"-pr"+cmt.PR, "-o=jsonpath='{.items..spec.ports..nodePort}'")
+	cmd = exec.Command("kubectl", "get", "svc", "-n", cmt.Username+"-"+cmt.Repo+"-pr"+cmt.PR, "-o", `go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.name}}{{" "}}{{.nodePort}}{{" "}}{{.protocol}}{{"\n"}}{{end}}{{end}}{{end}}'`)
 	output, err := cmd.Output()
 	if err != nil {
 		//c.CommentPR(cmt, "**ERROR IN CI**")
@@ -129,11 +150,17 @@ func (c *Config) k8sDeploy(dir string, k8s string, imageMap map[string]string, c
 		log.Print("ERROR : ", err.Error())
 		return err
 	}
-	cmtData := "\nLink Expires In : " + strconv.Itoa(cmt.Time) + "mins"
-	ports := strings.Split(strings.Trim(string(output), "'"), " ")
+	cmtData := "\n**LINK EXPIRES IN : " + strconv.Itoa(cmt.Time) + "mins**\n"
+	ports := strings.Split(strings.Trim(string(output), "'"), "\n")
+	portData := "SVC Name | Address | Protocol\n--- | --- | ---\n"
 	for _, value := range ports {
-		cmtData += "\n- " + c.host + ":" + value
+		if value == "" {
+			continue
+		}
+		port := strings.Split(value, " ")
+		portData += port[0] + " | " + c.host + ":" + port[1] + " | " + port[2] + "\n"
 	}
+	cmtData += portData
 	c.CommentPR(cmt, cmtData)
 	time.Sleep(time.Duration(cmt.Time) * time.Minute)
 	log.Print("STOPPING K8s DEPLOYMENT FOR : ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
@@ -148,7 +175,7 @@ func (c *Config) k8sDeploy(dir string, k8s string, imageMap map[string]string, c
 		log.Printf("\n%s", output)
 		log.Print("STOPPED K8s DEPLOYMENT for: ", cmt.Username+"/"+cmt.Repo+":PR#"+cmt.PR)
 	}
-	c.CommentPR(cmt, "<br>LINK EXPIRED")
+	c.CommentPR(cmt, "\n**LINK EXPIRED**")
 	return nil
 }
 

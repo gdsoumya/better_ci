@@ -8,9 +8,8 @@ import (
 
 	"github.com/gdsoumya/better_ci/utils"
 
-	"github.com/joho/godotenv"
-
 	"github.com/google/go-github/v32/github"
+	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
