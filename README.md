@@ -178,7 +178,7 @@ spec:
 
 **The templates can be separately defined from the actual deployment files, so you can have a `docker-compose.yml` and a `ci-docker-compose.yml` at the same time. Just make sure to mention the correct file path in the -`.betterci/config.json`**
 
-## Initiate Build
+## Initiate Preview
 
 To start the preview build of a PR in a registered repo -
 * Comment In the PR: **/preview**
