@@ -5,7 +5,7 @@ Just a Better CI that you always wanted. Allows you to deploy PRs temporarily fo
 ## Prerequisites
 
 1. [Docker](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04) and [Docker-Compose](https://docs.docker.com/compose/install/)
-2. Kubectl configured
+2. Kubectl configured [Tested on Kubeadm setup]
 
 ## Start CI
 1. Cone Repo
