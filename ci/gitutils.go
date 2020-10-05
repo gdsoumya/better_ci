@@ -12,6 +12,12 @@ import (
 )
 
 func (c *Config) ClonePR(cmt *types.EventDetails) (string, error) {
+	accessKey, keyExists := os.LookupEnv("ACCESS_KEY")
+	githubUser, usernameExists := os.LookupEnv("GITHUB_USERNAME")
+	cloneURL := "https://github.com/"+cmt.Username+"/"+cmt.Repo+".git"
+	if keyExists && usernameExists{
+		cloneURL = "https://"+githubUser+":"+accessKey+"@github.com/"+cmt.Username+"/"+cmt.Repo+".git"
+	}
 	dir := cmt.Username + "_" + cmt.Repo + "_pr" + cmt.PR
 	if utils.DirPresent(dir) {
 		c.CommentPR(cmt, "** WAIT FOR PREVIOUS BUILD TO EXPIRE **")
@@ -24,7 +30,7 @@ func (c *Config) ClonePR(cmt *types.EventDetails) (string, error) {
 		log.Print("DIR CREATION ERROR : " + cmt.Username + "/" + cmt.Repo + ":PR#" + cmt.PR)
 		return dir, errors.New("ERROR")
 	}
-	cmd := exec.Command("git", "clone", "https://github.com/"+cmt.Username+"/"+cmt.Repo+".git", ".")
+	cmd := exec.Command("git", "clone", cloneURL, ".")
 	cmd.Dir = dir
 	// run command
 	if _, err := cmd.Output(); err != nil {

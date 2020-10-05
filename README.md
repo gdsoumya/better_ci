@@ -16,13 +16,14 @@ $ cd better_ci
 ```
 2. Create .env file with :
 * All Fields except `HOST` are compulsory
-* `ACCESS_KEY` only needs `public_repo` access
+* `ACCESS_KEY` only needs `public_repo` access if not used with private repos
 * If `HOST` is missing from`.env` the `public ip` of the system is used.
 * `AUTHOR_PERMISSION` can have values representing the author permission levels, it can be `OWNER`, `COLLABORATOR`, `CONTRIBUTOR`, `MEMBER` etc. or `ANY` for all permission levels. The value can be the combination of the different permissions, separated by space.<br>Eg. `AUTHOR_PERMISSION=OWNER COLLABORATOR`
   
 ```
 HOST=<optional-field-for-public-ip-or-hostname>
 PORT=<port-to-run-ci-server>
+GITHUB_USERNAME=<your-github-username>
 ACCESS_KEY=<your-personal-github-access-key>
 DOCKER_USER=<docker-username-for-builds>
 DOCKER_PASS=<docker-password>
